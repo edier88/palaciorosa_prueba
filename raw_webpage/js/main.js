@@ -26,6 +26,8 @@ $("#botonModalCrearUsuario").click(function(){
 
 
 function mostrarTabla(){
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
     $.ajax({
         url:'controller/usuarioController.php',
         data: {
@@ -43,52 +45,31 @@ function mostrarTabla(){
             cadena += 
             "<table id='table1' style='width:100%'>"+
                 "<tr>"+
-                    "<th>Usuario</th>"+
-                    "<th>Dinero Disponible</th>"+
-                    "<th>Apuesta</th>"+
-                    "<th>Porcentaje apostado</th>"+
-                    "<th>Dinero apostado</th>"+
+                    "<th>ID</th>"+
+                    "<th>nombre</th>"+
+                    "<th>E-Mail</th>"+
+                    "<th>Password</th>"+
+                    "<th>Edad</th>"+
+                    "<th>Edad2</th>"+
+                    "<th>Sexo</th>"+
+                    "<th>Direccion</th>"+
+                    "<th>Fecha Creacion</th>"+
+                    "<th>Fecha Modificacion</th>"+
                     "<th>Opciones</th>"+
                 "</tr>";
             parsed.forEach(element => {
                 cadena+=
                 "<tr>"+
-                    "<td>"+element.usuario+"</td>"+
-                    "<td><div id='dinero_"+element.id+"'>"+element.dinero+"</div></td>"+
-                    "<td>"+
-                        "<select class='apuesta_color' name='colores_"+element.id+"' id='"+element.id+"'>"+
-                            "<option value='negro'>Negro</option>"+
-                            "<option value='verde'>Verde</option>"+
-                            "<option value='rojo'>Rojo</option>"+
-                        "</select>"+
-                    "</td>";
-                    if (element.dinero <= 1000){
-                        cadena+=
-                        "<td>"+
-                            "<select class='apuesta_porcentaje' name='porcentaje_"+element.id+"' id='porcentaje_"+element.id+"'>"+
-                                "<option value='0' disabled selected>Porcentaje</option>"+
-                                "<option value='100'>100%</option>"+
-                            "</select>"+
-                        "</td>";
-                    } else{
-                        cadena+=
-                        "<td>"+
-                            "<select class='apuesta_porcentaje' name='porcentaje_"+element.id+"' id='porcentaje_"+element.id+"'>"+
-                                "<option value='0' disabled selected>Porcentaje</option>"+
-                                "<option value='11'>11%</option>"+
-                                "<option value='12'>12%</option>"+
-                                "<option value='13'>13%</option>"+
-                                "<option value='14'>14%</option>"+
-                                "<option value='15'>15%</option>"+
-                                "<option value='16'>16%</option>"+
-                                "<option value='17'>17%</option>"+
-                                "<option value='18'>18%</option>"+
-                                "<option value='19'>19%</option>"+
-                            "</select>"+
-                        "</td>";
-                    }
-                    cadena+=
-                    "<td><div class='dineroApostado' id='apostado_"+element.id+"'></div></td>"+
+                    "<td>"+element.id+"</td>"+
+                    "<td>"+element.nombre+"</td>"+
+                    "<td>"+element.email+"</td>"+
+                    "<td>"+element.passwd+"</td>"+
+                    "<td>"+element.fecha_nacimiento+"</td>"+
+                    "<td>"+date+"</td>"+
+                    "<td>"+element.sexo+"</td>"+
+                    "<td>"+element.direccion+"</td>"+
+                    "<td>"+element.fecha_creacion+"</td>"+
+                    "<td>"+element.fecha_modificacion+"</td>"+
                     "<td>"+
                         "<div class='row justify-content-center'>"+
                             "<div class='col'>"+

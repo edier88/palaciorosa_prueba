@@ -5,7 +5,7 @@ CREATE TABLE palaciorosa_DB.usuarios (
     nombre VARCHAR (30),
     email VARCHAR (50),
     passwd VARCHAR (60),
-    edad TINYINT,
+    fecha_nacimiento DATE,
     sexo CHAR,
     direccion VARCHAR (50),
     fecha_creacion DATETIME NOT NULL,
@@ -16,4 +16,4 @@ CREATE TABLE palaciorosa_DB.usuarios (
 CHARACTER SET latin1 COLLATE latin1_swedish_ci
 ENGINE MyISAM;
 
-INSERT INTO palaciorosa_DB.usuarios (nombre, email, passwd, edad, sexo, direccion, fecha_creacion) VALUES ("prueba", "prueba@hotmail.com", "prueba", "30", "M", "carrera 4", NOW());
+INSERT INTO palaciorosa_DB.usuarios (nombre, email, passwd, fecha_nacimiento, sexo, direccion, fecha_creacion) VALUES ("prueba", "prueba@hotmail.com", "prueba", "1990-01-09", "M", "carrera 4", NOW());
