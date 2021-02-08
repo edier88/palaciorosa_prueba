@@ -1,208 +1,240 @@
 
 window.onload = mostrarTabla()
 
+botonModalCrearUsuario.onclick = () => {
 
-$("#botonModalCrearUsuario").click(function(){
-    
-    $.ajax({
-        url:'controller/usuarioController.php',
-        data: {
-            "usuario": usuario_create.value,
-            "accion": "crear",
-            "dataUsuario": true
-        },
-        beforeSend: function(objeto){
-            //$("#respuestaCrearUsuario").html("<img src='../imagenes/loader.gif'>");
-        },
-        success:function(data){
-            if (data == 1){
-                $("#modalCrearUsuario").modal("hide")
-                mostrarTabla()
-            }
-        }
+    /* La funcion Axios funciona con 2 promesas internamente
+    La primera promesa devuelve la operacion de alcanzar la URL 
+    La segunda promesa resuelve la respuesta de todos los parámetros enviados
+    Por eso se necesitan dos ".then"
+    */
+
+    var datos = new FormData();
+    datos.append("nombre", nombre_create.value)
+    datos.append("email", email_create.value)
+    datos.append("passwd", passwd_create.value)
+    datos.append("fechaNacimiento", fechaNacimiento_create.value)
+    datos.append("sexo", sexo_create.value)
+    datos.append("direccion", direccion_create.value)
+    datos.append("accion", "create")
+    datos.append("dataUsuario", true)
+
+    axios({
+        url: 'controller/userController.php',
+        method: 'post',
+        responseType: 'json',
+        data: datos
     })
-})
-
+    .then((res) => {
+        if(res.status==200) {
+            return res.data
+        }
+        console.log(res)
+    })
+    .catch((error) => {
+        console.log('Error de conexión ' + error)
+    })
+    .then((res) => {
+        mostrarTabla()
+        let myModalCrearUsuario = new bootstrap.Modal(document.getElementById('modalCrearUsuario'), {keyboard: true})
+        myModalCrearUsuario.hide()
+    })
+}
 
 
 function mostrarTabla(){
-    var today = new Date();
-    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
-    $.ajax({
-        url:'controller/usuarioController.php',
-        data: {
-            "accion": "tabla",
-            "dataUsuario": true
-        },
-        beforeSend: function(objeto){
-            //$("#respuestaCrearUsuario").html("<img src='../imagenes/loader.gif'>");
-        },
-        success:function(data){
-            cadena = ""
-            console.log(data)
-            var parsed = JSON.parse(data)
-            //console.log(parsed)
-            cadena += 
-            "<table id='table1' style='width:100%'>"+
-                "<tr>"+
-                    "<th>ID</th>"+
-                    "<th>nombre</th>"+
-                    "<th>E-Mail</th>"+
-                    "<th>Password</th>"+
-                    "<th>Edad</th>"+
-                    "<th>Edad2</th>"+
-                    "<th>Sexo</th>"+
-                    "<th>Direccion</th>"+
-                    "<th>Fecha Creacion</th>"+
-                    "<th>Fecha Modificacion</th>"+
-                    "<th>Opciones</th>"+
-                "</tr>";
-            parsed.forEach(element => {
-                cadena+=
-                "<tr>"+
-                    "<td>"+element.id+"</td>"+
-                    "<td>"+element.nombre+"</td>"+
-                    "<td>"+element.email+"</td>"+
-                    "<td>"+element.passwd+"</td>"+
-                    "<td>"+element.fecha_nacimiento+"</td>"+
-                    "<td>"+date+"</td>"+
-                    "<td>"+element.sexo+"</td>"+
-                    "<td>"+element.direccion+"</td>"+
-                    "<td>"+element.fecha_creacion+"</td>"+
-                    "<td>"+element.fecha_modificacion+"</td>"+
-                    "<td>"+
-                        "<div class='row justify-content-center'>"+
-                            "<div class='col'>"+
-                                "<button class='btn btn-success btn-sm' type='button' onclick='editUserModal(\""+element.id+"\");'><i class='fa fa-edit'></i></button>"+
-                            "</div>"+
-                            "<div class='col'>"+
-                                "<button class='btn btn-danger btn-sm' type='button' onclick='removeUser(\""+element.id+"\");'><i class='fa fa-times'></i></button>"+
-                            "</div>"+
-                        "</div>"+
-                    "</td>"+
-                "</tr>";
-                
-            })
-            cadena += "</table>";
-            $("#tablaUsuarios").html(cadena)
 
-            
-            $(".apuesta_porcentaje").change(function(){
-                let elemento = $(this)
-                let res = (elemento[0].id).split("_")
-                let id = res[1]
-                let dinero_actual = $("#dinero_"+res[1]).html()
-                $("#apostado_"+res[1]).html( dinero_actual*((elemento[0].value)/100) )
-            })
+    // Aqui puede estar un loader corriendo
+    axios({
+        url: 'controller/userController.php',
+        method: 'get',
+        responseType: 'json',
+        params:{
+            "accion": "table",
+            "dataUsuario": true
         }
     })
+    .then((res) => {
+        if(res.status==200) {
+            return res.data // Le paso la respuesta al segundo ".then"
+        }
+        console.log(res);
+        
+    })
+    .catch((error) => {
+        //mensaje.innerText = 'Error de conexión ' + err;
+        console.log('Error de conexión ' + error);
+    })
+    .then((res) => {
+        // Aquí se puede apagar el loader
+        mostrarTabla2(res)
+    })    
+}
+
+
+function mostrarTabla2(data)  {
+    
+    let cadena = ""
+    let edad = 0
+    
+    cadena += 
+    "<table id='table1' style='width:100%'>"+
+        "<tr>"+
+            "<th>ID</th>"+
+            "<th>nombre</th>"+
+            "<th>E-Mail</th>"+
+            "<th>Fedcha de Nacimiento</th>"+
+            "<th>Edad</th>"+
+            "<th>Sexo</th>"+
+            "<th>Direccion</th>"+
+            "<th>Fecha Creacion</th>"+
+            "<th>Fecha Modificacion</th>"+
+            "<th>Opciones</th>"+
+        "</tr>";
+    data.forEach(element => {
+        edad = calcularEdad(element.fecha_nacimiento)
+        cadena+=
+        "<tr>"+
+            "<td>"+element.id+"</td>"+
+            "<td>"+element.nombre+"</td>"+
+            "<td>"+element.email+"</td>"+
+            "<td>"+element.fecha_nacimiento+"</td>"+
+            "<td>"+edad+"</td>"+
+            "<td>"+element.sexo+"</td>"+
+            "<td>"+element.direccion+"</td>"+
+            "<td>"+element.fecha_creacion+"</td>"+
+            "<td>"+element.fecha_modificacion+"</td>"+
+            "<td>"+
+                "<div class='row justify-content-center'>"+
+                    "<div class='col'>"+
+                        "<button class='btn btn-success btn-sm' type='button' onclick='editUserModal(\""+element.id+"\");'><i class='fa fa-edit'></i></button>"+
+                    "</div>"+
+                    "<div class='col'>"+
+                        "<button class='btn btn-danger btn-sm' type='button' onclick='removeUser(\""+element.id+"\");'><i class='fa fa-times'></i></button>"+
+                    "</div>"+
+                "</div>"+
+            "</td>"+
+        "</tr>";
+        
+    })
+    cadena += "</table>";
+    tablaUsuarios.innerHTML = cadena
     
 }
 
 function editUserModal(id){
 
-    $.ajax({
-        url:'controller/usuarioController.php',
-        data: {
+    axios({
+        url: 'controller/userController.php',
+        method: 'get',
+        responseType: 'json',
+        params:{
             "id_usuario": id,
             "accion": "show",
             "dataUsuario": true
-        },
-        beforeSend: function(objeto){
-            //$("#respuestaCrearUsuario").html("<img src='../imagenes/loader.gif'>");
-        },
-        success:function(data){
-            console.log(data)
-            var parsed = JSON.parse(data)
-            $("#usuario_edit").val(parsed[0].usuario)
-            $("#id_edit").val(parsed[0].id)
-            $("#modalEditarUsuario").modal("show")
         }
+    })
+    .then((res) => {
+        if(res.status==200) {
+            return res.data // Le paso la respuesta al segundo ".then"
+        }
+        console.log(res);
+    })
+    .catch((error) => {
+        //mensaje.innerText = 'Error de conexión ' + err;
+        console.log('Error de conexión ' + error);
+    })
+    .then((res) => {
+        // Aquí se puede apagar el loader
+        id_edit.value = res[0].id
+        nombre_edit.value = res[0].nombre
+        email_edit.value = res[0].email
+        passwd_edit.value = "xxxxxxx"
+        fechaNacimiento_edit.value = res[0].fecha_nacimiento
+        sexo_edit.value = res[0].sexo
+        direccion_edit.value = res[0].direccion
+        var myModalEditarUsuario = new bootstrap.Modal(document.getElementById('modalEditarUsuario'), {keyboard: true})
+        myModalEditarUsuario.show()
+        mostrarTabla()
     })
 }
 
-$("#botonModalEditarUsuario").click(function(){
+botonModalEditarUsuario.onclick = () => {
 
-    $.ajax({
-        url:'controller/usuarioController.php',
-        data: {
-            "id_usuario": id_edit.value,
-            "usuario": usuario_edit.value,
-            "dinero": dinero_edit.value,
-            "accion": "edit",
-            "dataUsuario": true
-        },
-        beforeSend: function(objeto){
-            //$("#respuestaCrearUsuario").html("<img src='../imagenes/loader.gif'>");
-        },
-        success:function(data){
-            if (data == 1){
-                $("#modalEditarUsuario").modal("hide")
-                mostrarTabla()
-            }
-        }
+    var datos = new FormData()
+    datos.append("id_usuario", id_edit.value)
+    datos.append("nombre", nombre_edit.value)
+    datos.append("email", email_edit.value)
+    datos.append("passwd", passwd_edit.value)
+    datos.append("fechaNacimiento", fechaNacimiento_edit.value)
+    datos.append("sexo", sexo_edit.value)
+    datos.append("direccion", direccion_edit.value)
+    datos.append("accion", "edit")
+    datos.append("dataUsuario", true)
+
+    axios({
+        url: 'controller/userController.php',
+        method: 'post',
+        responseType: 'json',
+        data: datos
     })
-})
+    .then((res) => {
+        if(res.status==200) {
+            return res.data
+        }
+        console.log(res)
+    })
+    .catch((error) => {
+        console.log('Error de conexión ' + error)
+    })
+    .then((res) => {        
+        var myModalEditarUsuario = new bootstrap.Modal(document.getElementById('modalEditarUsuario'), {keyboard: false})
+        myModalEditarUsuario.hide()
+        mostrarTabla()
+    })
+}
 
 function removeUser(id){
     if (confirm('¿Estas seguro de eliminar este usuario de la base de datos?')){
-        $.ajax({
-            url:'controller/usuarioController.php',
-            data: {
-                "id_usuario": id,
-                "accion": "remove",
-                "dataUsuario": true
-            },
-            beforeSend: function(objeto){
-                //$("#respuestaCrearUsuario").html("<img src='../imagenes/loader.gif'>");
-            },
-            success:function(data){
-                
-                if (data == 1){
-                    mostrarTabla()
-                }
+
+        var datos = new FormData();
+        datos.append("id_usuario", id)
+        datos.append("accion", "remove")
+        datos.append("dataUsuario", true)
+
+        axios({
+            url: 'controller/userController.php',
+            method: 'post',
+            responseType: 'json',
+            data: datos
+        })
+        .then((res) => {
+            if(res.status==200) {
+                return res.data
             }
+            console.log(res)
+        })
+        .catch((error) => {
+            console.log('Error de conexión ' + error)
+        })
+        .then((res) => {
+            mostrarTabla()
         })
     }
 }
 
-$("#botonApostar").click(function(){
-    let arrayApuesta = $(".apuesta_color")
-    let arrayDineroApostado = $(".dineroApostado")
-    let objApuesta = {}
-    
-    for (let i = 0; i < arrayApuesta.length; i++) {
-        objApuesta[arrayApuesta[i].id] = [arrayApuesta[i].value, arrayDineroApostado[i].innerHTML]
-    }
-    
-    $.ajax({
-        url:'controller/apuestaController.php',
-        data: {
-            "apuesta": objApuesta,
-            "accion": "calcularApuesta",
-            "dataApuesta": true
-        },
-        beforeSend: function(objeto){
-            //$("#respuestaCrearUsuario").html("<img src='../imagenes/loader.gif'>");
-        },
-        success:function(data){
-            //console.log(data)
-            switch (data) {
-                case "negro":
-                    $("#respuestaColor").html("<div class='box black'></div> Ganó Negro")
-                break;
-                case "verde":
-                    $("#respuestaColor").html("<div class='box green'></div> Ganó Verde")
-                break;
-                case "rojo":
-                    $("#respuestaColor").html("<div class='box red'></div> Ganó Rojo")
-                break;
-            }
-            mostrarTabla()
-        }
-    })
-})
+function calcularEdad(fecha){
+    var today = new Date();
+    //var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()
+    var fechaArr = fecha.split("-");
+    var year = 0
 
-$("#botonLimpiar").click(function(){
-    $("#respuestaColor").html("")
-})
+    year = today.getFullYear() - fechaArr[0]
+
+    if ( (today.getMonth()+1) < fechaArr[1]){
+        year = year-1
+    } else if ( (today.getMonth()+1) == fechaArr[1] && (today.getDate()) < fechaArr[2] ) {
+        year = year-1
+    }
+    return year
+}
