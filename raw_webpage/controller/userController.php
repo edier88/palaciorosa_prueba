@@ -3,6 +3,7 @@
 //print_r($_REQUEST);
 //var_dump($_POST);
 //echo json_encode($_REQUEST);
+session_start();
 
 include_once("../model/dbModel.php");
 
@@ -27,7 +28,7 @@ if(isset($_REQUEST['dataUsuario'])){
       password_hash('rasmuslerdorf', PASSWORD_DEFAULT)
 
       */
-      $sql = "INSERT INTO usuarios (nombre, email, passwd, fecha_nacimiento, sexo, direccion, fecha_creacion) VALUES ('{$_REQUEST['nombre']}', '{$_REQUEST['email']}', '{$passwdCrypted}', '{$_REQUEST['fechaNacimiento']}', '{$_REQUEST['sexo']}', '{$_REQUEST['direccion']}', NOW())";
+      $sql = "INSERT INTO usuarios (username, email, passwd, fecha_nacimiento, sexo, direccion, fecha_creacion) VALUES ('{$_REQUEST['username']}', '{$_REQUEST['email']}', '{$passwdCrypted}', '{$_REQUEST['fechaNacimiento']}', '{$_REQUEST['sexo']}', '{$_REQUEST['direccion']}', NOW())";
       $intCamposAfectados = $modelo->ejecutarSentencia($sql);
       echo json_encode($intCamposAfectados);
     break;
@@ -38,10 +39,10 @@ if(isset($_REQUEST['dataUsuario'])){
     break;
     case "edit":
       if ($_REQUEST['passwd'] == "xxxxxxx"){
-        $sql = "UPDATE usuarios SET nombre='{$_REQUEST['nombre']}', email='{$_REQUEST['email']}', fecha_nacimiento='{$_REQUEST['fechaNacimiento']}', sexo='{$_REQUEST['sexo']}', direccion='{$_REQUEST['direccion']}', fecha_modificacion=NOW() WHERE id={$_REQUEST['id_usuario']}";
+        $sql = "UPDATE usuarios SET username='{$_REQUEST['username']}', email='{$_REQUEST['email']}', fecha_nacimiento='{$_REQUEST['fechaNacimiento']}', sexo='{$_REQUEST['sexo']}', direccion='{$_REQUEST['direccion']}', fecha_modificacion=NOW() WHERE id={$_REQUEST['id_usuario']}";
       } else{
         $passwdCrypted = password_hash($_REQUEST['passwd'], PASSWORD_BCRYPT, ['cost' => 9]);
-        $sql = "UPDATE usuarios SET nombre='{$_REQUEST['nombre']}', email='{$_REQUEST['email']}', passwd='{$passwdCrypted}', fecha_nacimiento='{$_REQUEST['fechaNacimiento']}', sexo='{$_REQUEST['sexo']}', direccion='{$_REQUEST['direccion']}', fecha_modificacion=NOW() WHERE id={$_REQUEST['id_usuario']}";
+        $sql = "UPDATE usuarios SET username='{$_REQUEST['username']}', email='{$_REQUEST['email']}', passwd='{$passwdCrypted}', fecha_nacimiento='{$_REQUEST['fechaNacimiento']}', sexo='{$_REQUEST['sexo']}', direccion='{$_REQUEST['direccion']}', fecha_modificacion=NOW() WHERE id={$_REQUEST['id_usuario']}";
       }
       //echo json_encode($sql);
       $intCamposAfectados = $modelo->ejecutarSentencia($sql);
@@ -53,12 +54,13 @@ if(isset($_REQUEST['dataUsuario'])){
 	    echo json_encode($intCamposAfectados);
     break;
     case "login":
-      $sql = "SELECT * FROM usuarios WHERE nombre = '{$_REQUEST['nombre']}'";
+      $sql = "SELECT * FROM usuarios WHERE username = '{$_REQUEST['username']}'";
       $intCamposAfectados = $modelo->arrEjecutarConsulta($sql);
       if (password_verify($_REQUEST['passwd'], $intCamposAfectados[0]['passwd'])) {
-        echo json_encode('Password is valid!');
+        echo json_encode(true);
+        $_SESSION['palaciorosaUserAuthenticated'] = $_REQUEST['username'];
       } else {
-        echo json_encode('Invalid password.');
+        echo json_encode(false);
       }
     
   }

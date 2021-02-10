@@ -2,7 +2,7 @@ CREATE DATABASE palaciorosa_DB CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 
 CREATE TABLE palaciorosa_DB.usuarios (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR (30),
+    username VARCHAR (30),
     email VARCHAR (50),
     passwd VARCHAR (60),
     fecha_nacimiento DATE,
@@ -11,7 +11,7 @@ CREATE TABLE palaciorosa_DB.usuarios (
     fecha_creacion DATETIME NOT NULL,
     fecha_modificacion DATETIME NULL,
     PRIMARY KEY (id),
-    UNIQUE (email)
+    UNIQUE (username, email)
 )
 CHARACTER SET latin1 COLLATE latin1_swedish_ci
 ENGINE MyISAM;

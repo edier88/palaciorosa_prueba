@@ -8,7 +8,7 @@ loginSubmit.onclick = () => {
     */
 
     var datos = new FormData();
-    datos.append("nombre", user_login.value)
+    datos.append("username", user_login.value)
     datos.append("passwd", pass_login.value)
     datos.append("accion", "login")
     datos.append("dataUsuario", true)
@@ -30,5 +30,12 @@ loginSubmit.onclick = () => {
     })
     .then((res) => {
         console.log(res)
+        
+        if(res == true){
+            window.location.href="index.php";
+        } else {
+            respuestaLogin.innerHTML = "Contraseña o usuario inválidos"
+        }
+        
     })
 }

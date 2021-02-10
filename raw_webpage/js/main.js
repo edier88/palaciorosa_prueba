@@ -1,6 +1,9 @@
 
 window.onload = mostrarTabla()
 
+var myModalCrearUsuario = new bootstrap.Modal(document.getElementById('modalCrearUsuario'), {keyboard: true})
+var myModalEditarUsuario = new bootstrap.Modal(document.getElementById('modalEditarUsuario'), {keyboard: true})
+
 botonModalCrearUsuario.onclick = () => {
 
     /* La funcion Axios funciona con 2 promesas internamente
@@ -10,7 +13,7 @@ botonModalCrearUsuario.onclick = () => {
     */
 
     var datos = new FormData();
-    datos.append("nombre", nombre_create.value)
+    datos.append("username", username_create.value)
     datos.append("email", email_create.value)
     datos.append("passwd", passwd_create.value)
     datos.append("fechaNacimiento", fechaNacimiento_create.value)
@@ -36,7 +39,6 @@ botonModalCrearUsuario.onclick = () => {
     })
     .then((res) => {
         mostrarTabla()
-        let myModalCrearUsuario = new bootstrap.Modal(document.getElementById('modalCrearUsuario'), {keyboard: true})
         myModalCrearUsuario.hide()
     })
 }
@@ -81,7 +83,7 @@ function mostrarTabla2(data)  {
     "<table id='table1' style='width:100%'>"+
         "<tr>"+
             "<th>ID</th>"+
-            "<th>nombre</th>"+
+            "<th>User Name</th>"+
             "<th>E-Mail</th>"+
             "<th>Fedcha de Nacimiento</th>"+
             "<th>Edad</th>"+
@@ -96,7 +98,7 @@ function mostrarTabla2(data)  {
         cadena+=
         "<tr>"+
             "<td>"+element.id+"</td>"+
-            "<td>"+element.nombre+"</td>"+
+            "<td>"+element.username+"</td>"+
             "<td>"+element.email+"</td>"+
             "<td>"+element.fecha_nacimiento+"</td>"+
             "<td>"+edad+"</td>"+
@@ -147,13 +149,12 @@ function editUserModal(id){
     .then((res) => {
         // Aquí se puede apagar el loader
         id_edit.value = res[0].id
-        nombre_edit.value = res[0].nombre
+        username_edit.value = res[0].username
         email_edit.value = res[0].email
         passwd_edit.value = "xxxxxxx"
         fechaNacimiento_edit.value = res[0].fecha_nacimiento
         sexo_edit.value = res[0].sexo
         direccion_edit.value = res[0].direccion
-        var myModalEditarUsuario = new bootstrap.Modal(document.getElementById('modalEditarUsuario'), {keyboard: true})
         myModalEditarUsuario.show()
         mostrarTabla()
     })
@@ -163,7 +164,7 @@ botonModalEditarUsuario.onclick = () => {
 
     var datos = new FormData()
     datos.append("id_usuario", id_edit.value)
-    datos.append("nombre", nombre_edit.value)
+    datos.append("username", username_edit.value)
     datos.append("email", email_edit.value)
     datos.append("passwd", passwd_edit.value)
     datos.append("fechaNacimiento", fechaNacimiento_edit.value)
@@ -188,7 +189,6 @@ botonModalEditarUsuario.onclick = () => {
         console.log('Error de conexión ' + error)
     })
     .then((res) => {        
-        var myModalEditarUsuario = new bootstrap.Modal(document.getElementById('modalEditarUsuario'), {keyboard: false})
         myModalEditarUsuario.hide()
         mostrarTabla()
     })
