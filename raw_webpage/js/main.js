@@ -4,7 +4,9 @@ window.onload = mostrarTabla()
 var myModalCrearUsuario = new bootstrap.Modal(document.getElementById('modalCrearUsuario'), {keyboard: true})
 var myModalEditarUsuario = new bootstrap.Modal(document.getElementById('modalEditarUsuario'), {keyboard: true})
 
-botonModalCrearUsuario.onclick = () => {
+
+botonModalCrearUsuario.addEventListener("click", () => {
+//botonModalCrearUsuario.onclick = () => {
 
     /* La funcion Axios funciona con 2 promesas internamente
     La primera promesa devuelve la operacion de alcanzar la URL 
@@ -41,7 +43,8 @@ botonModalCrearUsuario.onclick = () => {
         mostrarTabla()
         myModalCrearUsuario.hide()
     })
-}
+//}
+})
 
 
 function mostrarTabla(){
@@ -80,48 +83,48 @@ function mostrarTabla2(data)  {
     let edad = 0
     
     cadena += 
-    "<table id='table1' style='width:100%'>"+
-        "<tr>"+
-            "<th>ID</th>"+
-            "<th>User Name</th>"+
-            "<th>E-Mail</th>"+
-            "<th>Fedcha de Nacimiento</th>"+
-            "<th>Edad</th>"+
-            "<th>Sexo</th>"+
-            "<th>Direccion</th>"+
-            "<th>Fecha Creacion</th>"+
-            "<th>Fecha Modificacion</th>"+
-            "<th>Opciones</th>"+
-        "</tr>";
+       `<table id=table1 style=width:100%>
+            <tr>
+                <th>ID</th>
+                <th>User Name</th>
+                <th>E-Mail</th>
+                <th>Fedcha de Nacimiento</th>
+                <th>Edad</th>
+                <th>Sexo</th>
+                <th>Direccion</th>
+                <th>Fecha Creacion</th>
+                <th>Fecha Modificacion</th>
+                <th>Opciones</th>
+            </tr>`
     data.forEach(element => {
         edad = calcularEdad(element.fecha_nacimiento)
         cadena+=
-        "<tr>"+
-            "<td>"+element.id+"</td>"+
-            "<td>"+element.username+"</td>"+
-            "<td>"+element.email+"</td>"+
-            "<td>"+element.fecha_nacimiento+"</td>"+
-            "<td>"+edad+"</td>"+
-            "<td>"+element.sexo+"</td>"+
-            "<td>"+element.direccion+"</td>"+
-            "<td>"+element.fecha_creacion+"</td>"+
-            "<td>"+element.fecha_modificacion+"</td>"+
-            "<td>"+
-                "<div class='row justify-content-center'>"+
-                    "<div class='col'>"+
-                        "<button class='btn btn-success btn-sm' type='button' onclick='editUserModal(\""+element.id+"\");'><i class='fa fa-edit'></i></button>"+
-                    "</div>"+
-                    "<div class='col'>"+
-                        "<button class='btn btn-danger btn-sm' type='button' onclick='removeUser(\""+element.id+"\");'><i class='fa fa-times'></i></button>"+
-                    "</div>"+
-                "</div>"+
-            "</td>"+
-        "</tr>";
-        
+        `
+        <tr>
+            <td>${element.id}</td>
+            <td>${element.username}</td>
+            <td>${element.email}</td>
+            <td>${element.fecha_nacimiento}</td>
+            <td>${edad}</td>
+            <td>${element.sexo}</td>
+            <td>${element.direccion}</td>
+            <td>${element.fecha_creacion}</td>
+            <td>${element.fecha_modificacion}</td>
+            <td>
+                <div class="row justify-content-center">
+                    <div class="col">
+                        <button class="btn btn-success btn-sm" type="button" onclick="editUserModal(${element.id});"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-danger btn-sm" type="button" onclick="removeUser(${element.id});"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        `        
     })
     cadena += "</table>";
     tablaUsuarios.innerHTML = cadena
-    
 }
 
 function editUserModal(id){
@@ -160,7 +163,8 @@ function editUserModal(id){
     })
 }
 
-botonModalEditarUsuario.onclick = () => {
+botonModalEditarUsuario.addEventListener("click", () =>{
+//botonModalEditarUsuario.onclick = () => {
 
     var datos = new FormData()
     datos.append("id_usuario", id_edit.value)
@@ -192,7 +196,8 @@ botonModalEditarUsuario.onclick = () => {
         myModalEditarUsuario.hide()
         mostrarTabla()
     })
-}
+//}
+})
 
 function removeUser(id){
     if (confirm('¿Estas seguro de eliminar este usuario de la base de datos?')){
