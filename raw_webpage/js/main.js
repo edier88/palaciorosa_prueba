@@ -164,7 +164,6 @@ function editUserModal(id){
 }
 
 botonModalEditarUsuario.addEventListener("click", () =>{
-//botonModalEditarUsuario.onclick = () => {
 
     var datos = new FormData()
     datos.append("id_usuario", id_edit.value)
@@ -196,7 +195,6 @@ botonModalEditarUsuario.addEventListener("click", () =>{
         myModalEditarUsuario.hide()
         mostrarTabla()
     })
-//}
 })
 
 function removeUser(id){
