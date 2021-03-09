@@ -9,7 +9,7 @@ services:
     # container_name: palaciorosa_php_server
     build: .
     # Se necesita construir (build) el container de PHP desde el Dockerfile ubicado en este mismo directorio.
-    # Esto es porque en el Dockerfile reside la instruccion para instalar la extension "mysqli"
+    # Esto es porque en el Dockerfile reside la instruccion para instalar la extension "mysqli" en Apache
     ports:
       - 8000:80
     links:

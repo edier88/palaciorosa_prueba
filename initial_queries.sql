@@ -1,3 +1,5 @@
+-- This was made by the application in ./raw_webpage
+
 CREATE DATABASE palaciorosa_DB CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 
 CREATE TABLE palaciorosa_DB.usuarios (
